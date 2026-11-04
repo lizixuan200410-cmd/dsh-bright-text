@@ -1,0 +1,91 @@
+# bright-text · 字体颜色修改
+
+给 DSH 加一页「设置 → 字体颜色修改」：**文字颜色 + 字号 + 字体**三件事一起管。
+
+## 功能
+
+**颜色**
+- 色相（0–360）、饱和度、深色/浅色主题各自的亮度，四个滑块
+- 八个一键配色（白、暖白、青、绿、蓝、紫、粉、黄）
+- 当前主题那一行会自动标「当前主题」，别调错滑块
+- 亮度拉到 ≥96%（纯白）时会直接提示"看起来像没生效"的原因
+
+**字号**
+- 正文字号 12–22px，或「跟随宿主」
+- 只改正文，代码块 / 终端字号不动
+
+**字体**
+- 系统已装字体：楷体、行楷、隶书、仿宋、宋体、黑体、雅黑、幼圆（零下载）
+- 四款开源书法字体（SIL Open Font License，可自由使用与再分发）：
+
+  | 字体 | 风格 | 体积 |
+  | --- | --- | --- |
+  | 马善政楷书 | 毛笔楷书 | 3.6 MB |
+  | 志莽行书 | 行书 | 2.6 MB |
+  | 龙藏体 | 行草 | 3.3 MB |
+  | 刘建毛草 | 草书 | 2.6 MB |
+
+  首次选用时从 jsDelivr 下载并缓存到本机（IndexedDB），之后离线可用
+- 自己导入：`.ttf` / `.otf` / `.woff` / `.woff2` / `.ttc`，存在本机，重启还在，可逐个删除
+
+## 装在哪
+
+作为本地插件挂在 `desktop` profile 上：
+
+```
+C:\Users\27334\.dsh\profiles\desktop\package.json
+  "dependencies": { "@local/bright-text": "link:...\\bright-text" }
+  "dsh.profile.bundles": [ ..., "@local/bright-text" ]
+```
+
+`node_modules/@local/bright-text` 是指向本目录的 Junction。改完代码要**完全退出 DSH 再开**
+（本地目录插件的客户端产物不会热更）。
+
+## 设置页长什么样
+
+打开设置（左下角头像 →「设置」，或 Ctrl+,）→ 左侧「字体颜色修改」：
+
+- 顶部两行自检：
+
+  ```
+  主题 浅色 · 目标 rgb(135, 217, 165) · 样式表 已注入 · 标记 light
+  页面文字 rgb(135, 217, 165) @ p「需要你做一步」
+  ```
+
+  `目标` 是要染成的颜色，`页面文字` 是**量到的真实界面文字颜色**，两个一致才算生效。
+- 颜色区：四个滑块 + 八个预设
+- 字号区：一个滑块 + 「跟随宿主」
+- 字体区：系统字体一排、开源字体一排、导入区（含已导入列表）+ 预览
+- 底部：深色/浅色两块预览（会跟着字体和字号变）
+
+## 实现方式
+
+`client.js` 用 `ctx.slots.inject('settings.section', ...)` 注册一页，配置存
+`localStorage`（键 `dsh.bright-text.config`），导入字体的二进制存 IndexedDB
+（库 `dsh-bright-text`，表 `fonts`），字体显示名存 `dsh.bright-text.fonts`。
+
+覆盖的宿主变量：
+
+```
+--dsw-alias-label-primary / -primary-dimmed / -secondary / -tertiary / -caption / -dimmed   文字颜色
+--dsh-content-font-size / -secondary               正文字号
+--dsh-content-font-delta / -secondary              行高补偿（跟着字号走）
+--dsh-font-family-text → 宿主的 --dsw-font-family   正文字体
+```
+
+三层同时写入：
+
+1. **内联 important**：`html` 和 `body` 上 `style.setProperty(name, value, 'important')`
+2. **样式表**：`<style id="dsh-bright-text">` 注入 `<head>`
+3. **守护**：`MutationObserver` + 1.2s 定时自检，被宿主改写就补回去
+
+> 关键坑（都踩过）：`applyAll(cfg)` 必须把 cfg 写回模块级 `state.cfg`，否则守护用的是
+> 启动时的旧配置，改完 1.2 秒就会被覆盖回去；主题分支也不能依赖宿主把
+> `data-ds-dark-theme` 挂在 `body` 上（实测它挂 `<html>`，甚至没有），所以插件自己
+> 在 `<html>` 打 `data-btx-dark` / `data-btx-light`。
+
+## 卸载
+
+从 `C:\Users\27334\.dsh\profiles\desktop\package.json` 删掉依赖和 bundles 里的
+`@local/bright-text`，删 `node_modules\@local\bright-text` 这个 Junction，重启即可。
+改之前的备份在 `C:\Users\27334\.dsh\profiles\desktop\package.json.bak-brighttext-1792669908`。

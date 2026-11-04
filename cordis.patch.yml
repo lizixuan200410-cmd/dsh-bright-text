@@ -1,0 +1,5 @@
+# bright-text —— DSH bundle patch
+# 这一层把插件插进 profile 的配置树。安装后重启 DSH 生效。
+- insert:
+    - id: bright-text
+      name: dsh-bright-text

@@ -1,0 +1,47 @@
+{
+  "name": "dsh-bright-text",
+  "version": "0.3.0",
+  "description": "Colour, size and typeface for the DeepSeek Harness UI: pick a text colour for light/dark each, a body size, and a font — built-in Kai/Xing/Li/Song/Hei families, four open-source calligraphy fonts (OFL), or import your own .ttf/.otf/.woff2. · 统一改 DSH 界面文字的颜色、字号和字体。",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml"
+  ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "theme",
+    "font",
+    "font-family",
+    "font-size",
+    "typography",
+    "color",
+    "calligraphy",
+    "chinese-font"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lizixuan200410-cmd/dsh-bright-text.git"
+  },
+  "homepage": "https://github.com/lizixuan200410-cmd/dsh-bright-text#readme",
+  "bugs": {
+    "url": "https://github.com/lizixuan200410-cmd/dsh-bright-text/issues"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  }
+}
