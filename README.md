@@ -28,6 +28,16 @@
   首次选用时从 jsDelivr 下载并缓存到本机（IndexedDB），之后离线可用
 - 自己导入：`.ttf` / `.otf` / `.woff` / `.woff2` / `.ttc`，存在本机，重启还在，可逐个删除
 
+## 安装
+
+**通过插件市场**：在 DSH 的「插件市场 / 发现」里搜 `dsh-bright-text`，点安装即可（市场直接从本仓库构建）。
+命令行装法：`dsh plugin --profile <profile> add dsh-bright-text`。
+
+**手动 / 本地开发**：把仓库放到任意目录，在 profile 的 `package.json` 里加
+`"@local/bright-text": "link:<仓库目录>"`，并把 `@local/bright-text` 加进 `dsh.profile.bundles`。
+
+装好后**完全退出 DSH 再打开**（桌面版从托盘退出），设置左侧会出现「字体颜色修改」。
+
 ## 装在哪
 
 作为本地插件挂在 `desktop` profile 上：
