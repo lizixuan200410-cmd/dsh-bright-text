@@ -53,6 +53,8 @@ C:\Users\27334\.dsh\profiles\desktop\package.json
 
 ## 设置页长什么样
 
+![设置页](assets/settings.png)
+
 打开设置（左下角头像 →「设置」，或 Ctrl+,）→ 左侧「字体颜色修改」：
 
 - 顶部两行自检：
